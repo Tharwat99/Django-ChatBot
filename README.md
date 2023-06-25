@@ -1,6 +1,6 @@
 # My Django Project
 
-My Django project is a simple web application for chatbot.
+My Django project is a simple web application for chatbot AI.
 
 ## Installation
 
