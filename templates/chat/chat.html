@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Bot</title>
+</head>
+<body>
+    <div id="chat-icon" style="position: fixed; bottom: 0; right: 0;">
+        <img src="path/to/icon.png" alt="Chat Icon" width="50" height="50">
+    </div>
+    <div id="chat-window" style="display: none;">
+      <div>
+        <div id="chat-messages" style="height: 200px; overflow-y: scroll;"></div>
+            {% csrf_token %}
+            <input type="text" id="chat-input" style="flex-grow: 1;">
+            <button type="submit" style="margin-left: 10px;">Send</button>
+        </div>
+    </div>
+    <script>
+        document.getElementById('chat-icon').addEventListener('click', function() {
+            document.getElementById('chat-window').style.display = 'block';
+        });
+        function addChatMessage(message, sender) {
+            var messageDiv = document.createElement('div');
+            messageDiv.innerText = message;
+            if (sender === 'bot') {
+                messageDiv.style.backgroundColor = '#f2f2f2';
+                messageDiv.style.marginLeft = '50px';
+            } else {
+                messageDiv.style.backgroundColor = '#4CAF50';
+                messageDiv.style.color = 'white';
+                messageDiv.style.marginRight = '50px';
+            }
+            document.getElementById('chat-messages').appendChild(messageDiv);
+        }
+        document.getElementById('chat-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        var input = document.getElementById('chat-input');
+        var message = input.value;
+        input.value = '';
+        fetch('http://cognitron2.azurewebsites.net/cognitron_chat_stream_api', {
+            method: 'POST',
+            //mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json',
+                "Access-Control-Allow-Origin": "*",
+                // "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept",
+                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjg3MzczMDY0LCJpYXQiOjE2ODcyODY2NjQsImp0aSI6IjQ1YjI3MGFlYzAzMzRhZDM4NTMwMWMwMmNkN2FhMmYyIiwidXNlcl9pZCI6Im1vYW1lbl8xX3Bvc3RtYW4iLCJib3RfaWQiOiI3NzE1ODhhMC04MjMyLTQ5NGItYTJmYS1mZTMxMWZiNzNmOTUifQ.kqn6oKS_8jVGp9CxAELBiplECaxVjOr0pRVWNSt-e7Q', 'X-API_KEY':'32cfe93b-e5f2-449c-9236-442a0cd7fc7d'
+            },
+            body: JSON.stringify({ message: message })
+        })
+        .then(response => response.json())
+        .then(data => {
+          addChatMessage(data.message, 'bot');
+        })
+        .catch(error => {
+            console.error('Error sending message:', error);
+        });
+    });
+    </script>
+</body>
+</html>

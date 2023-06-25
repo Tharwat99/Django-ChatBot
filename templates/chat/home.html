@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Tharwat GPT</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    
+</head>
+
+<body>
+<div class="container">
+    <section class="navbar">
+        <nav>
+          <ul class="menuItems">
+            <li>{% if user.is_authenticated %}{{ user.username }}
+              {% endif %}
+            </li>
+            <li><a href="{% url 'user-app:logout' %}">Logout</a></li>
+          </ul>
+        </nav>
+      
+      </section>
+      
+    <form class="feedback-form">
+        {% csrf_token %}
+        <p>Did you find what you were looking for?</p>
+        <textarea name = 'comment' class="form-control comment-feedback"></textarea>
+        <input type = "hidden" id = 'prompt' name = 'prompt'>
+        <input type = "hidden" id = 'like' name = 'like'>
+        <input type = "hidden" id = 'dislike' name = 'dislike'>
+        <div class="d-flex w-100 justify-content-between mt-2"> 
+            <input type="button" class="btn btn-primary confirm-feedback"  value = 'Confirm'>
+            <input type="button" class="btn btn-danger cancel-feedback" value = 'Cancel'>
+        </div>
+    </form>
+    <div class="chatbox">
+        <div class="chatbox__support">
+            <div class="chatbox__header">
+                <div class="chatbox__image--header">
+                    <img src="https://img.icons8.com/color/48/000000/circled-user-male-skin-type-5--v1.png" alt="image">
+                </div>
+                <div class="chatbox__content--header">
+                    <h4 class="chatbox__heading--header">{% if user.is_authenticated %}
+                        <p>Welcome, {{ user.username }}!</p>
+                    {% else %}
+                        <p>Please log in to continue.</p>
+                    {% endif %}</h4>
+                </div>
+            </div>
+            <div class="chatbox__messages">
+                <div id = 'msg'></div>
+            </div>
+            <div class="chatbox__footer">
+                {% csrf_token name="my_csrf_token"%}    
+                <input type="text" class="form-control form-control-sm" placeholder="Write a message...">
+                <button class="chatbox__send--footer send__button">Send</button>
+            </div>
+        </div>
+        <div class="chatbox__button">
+            <button><img src="{% static 'images/chatbox-icon.svg' %}"/></button>
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/app.js' %}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</body>
+</html>
